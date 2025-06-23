@@ -24,36 +24,44 @@ async function generateUniqueName(name: string) {
 }
 
 router.post("/login", async (req, res) => {
-  console.log("username", req.body);
-  const username = req.body.username;
+  const inputUsername = req.body.username;
 
-  if (!username) {
-    res.status(404).json({
-      message: "please provide username ",
+  if (!inputUsername) {
+    res.status(400).json({
+      message: "Please provide username.",
     });
+    return;
   }
+
   try {
-    const FinalUsername = await generateUniqueName(username);
-    console.log("final", FinalUsername);
-    const user = await prisma.user.upsert({
-      where: { username: FinalUsername },
-      create: {
-        username: FinalUsername,
-        displayName: username,
-        createdAt: new Date(),
+    // Try to find existing user
+    let user = await prisma.user.findFirst({
+      where: {
+        displayName: inputUsername,
       },
-      update: {},
     });
 
+    // If not found, create one with a unique username
+    if (!user) {
+      const uniqueUsername = await generateUniqueName(inputUsername);
+      user = await prisma.user.create({
+        data: {
+          username: uniqueUsername,
+          displayName: inputUsername,
+          createdAt: new Date(),
+        },
+      });
+    }
+
+    // Create JWT token
     const token = jwt.sign({ id: user.id }, process.env.JWT_TOKEN!, {
       expiresIn: "7d",
     });
-    res.status(200).json({
-      user,
-      token,
-    });
+
+    res.status(200).json({ user, token });
+    return;
   } catch (error) {
-    console.error("Signup/Login error:", error);
+    console.error("Login error:", error);
     res.status(500).json({ error: "Something went wrong." });
     return;
   }

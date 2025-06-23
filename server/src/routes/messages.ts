@@ -79,4 +79,3 @@ router.get("/bulk", middleware, async (req, res) => {
 });
 export default router;
 
-//id is also chjanges ion evrey login so i canot get teh messages

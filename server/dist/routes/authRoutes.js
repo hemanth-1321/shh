@@ -37,35 +37,40 @@ function generateUniqueName(name) {
     });
 }
 router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("username", req.body);
-    const username = req.body.username;
-    if (!username) {
-        res.status(404).json({
-            message: "please provide username ",
+    const inputUsername = req.body.username;
+    if (!inputUsername) {
+        res.status(400).json({
+            message: "Please provide username.",
         });
+        return;
     }
     try {
-        const FinalUsername = yield generateUniqueName(username);
-        console.log("final", FinalUsername);
-        const user = yield prisma.user.upsert({
-            where: { username: FinalUsername },
-            create: {
-                username: FinalUsername,
-                displayName: username,
-                createdAt: new Date(),
+        // Try to find existing user
+        let user = yield prisma.user.findFirst({
+            where: {
+                displayName: inputUsername,
             },
-            update: {},
         });
+        // If not found, create one with a unique username
+        if (!user) {
+            const uniqueUsername = yield generateUniqueName(inputUsername);
+            user = yield prisma.user.create({
+                data: {
+                    username: uniqueUsername,
+                    displayName: inputUsername,
+                    createdAt: new Date(),
+                },
+            });
+        }
+        // Create JWT token
         const token = jsonwebtoken_1.default.sign({ id: user.id }, process.env.JWT_TOKEN, {
             expiresIn: "7d",
         });
-        res.status(200).json({
-            user,
-            token,
-        });
+        res.status(200).json({ user, token });
+        return;
     }
     catch (error) {
-        console.error("Signup/Login error:", error);
+        console.error("Login error:", error);
         res.status(500).json({ error: "Something went wrong." });
         return;
     }
