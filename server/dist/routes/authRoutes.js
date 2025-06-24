@@ -37,6 +37,7 @@ function generateUniqueName(name) {
     });
 }
 router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("req", req.body);
     const inputUsername = req.body.username;
     if (!inputUsername) {
         res.status(400).json({

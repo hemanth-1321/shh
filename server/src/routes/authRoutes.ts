@@ -24,6 +24,7 @@ async function generateUniqueName(name: string) {
 }
 
 router.post("/login", async (req, res) => {
+  console.log("req", req.body);
   const inputUsername = req.body.username;
 
   if (!inputUsername) {

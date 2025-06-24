@@ -36,4 +36,5 @@ model Message {
 
   isAnonymous Boolean @default(true)
   revealPaid  Boolean @default(false)
+  slug        String? @default("send me anonympus messages!")
 }

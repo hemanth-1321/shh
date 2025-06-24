@@ -5,12 +5,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
+const cors_1 = __importDefault(require("cors"));
 const express_1 = __importDefault(require("express"));
 const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
 const messages_1 = __importDefault(require("./routes/messages"));
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
-const PORT = 3000;
+const PORT = 8080;
+app.use((0, cors_1.default)());
 app.get("/", (req, res) => {
     res.send("Hello, world!");
 });
