@@ -5,10 +5,8 @@ export default function Home() {
   return (
     <div>
       <section className=" bg-black w-full h-auto overflow-hidden ">
-      <Marquees/>
-        
-        <Hero />
-        <Hero />
+        <Marquees />
+
         <Hero />
       </section>
     </div>

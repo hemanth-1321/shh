@@ -1,6 +1,7 @@
 // layout.tsx
 import { Onest } from "next/font/google";
 import type { Metadata } from "next";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 const onest = Onest({
@@ -22,6 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${onest.variable} font-onest`}>{children}</body>
+      <Toaster />
     </html>
   );
 }
