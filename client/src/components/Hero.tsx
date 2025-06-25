@@ -1,12 +1,12 @@
 "use client";
 
 import { motion, useMotionValue } from "framer-motion";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Button } from "./ui/button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
-import { toast } from "sonner";
+
 export const Hero = () => {
   const router = useRouter();
   const xImage1 = useMotionValue(0);
@@ -14,7 +14,15 @@ export const Hero = () => {
   const xImage2 = useMotionValue(0);
   const yImage2 = useMotionValue(0);
   const ref = useRef<HTMLDivElement>(null);
-  const { isAuthenticated } = useAuthStore() as { isAuthenticated: boolean };
+  const { loadTokenFromStorage, isAuthenticated } = useAuthStore() as {
+    loadTokenFromStorage: () => void;
+    isAuthenticated: boolean;
+  };
+
+  useEffect(() => {
+    loadTokenFromStorage();
+  }, []);
+  console.log(loadTokenFromStorage);
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!ref.current) return;
     const rect = ref.current.getBoundingClientRect();
@@ -33,7 +41,11 @@ export const Hero = () => {
   };
 
   const handleGetStarted = () => {
-    isAuthenticated ? router.push("/dashboard") : router.push("/auth");
+    if (isAuthenticated) {
+      router.push("/dashboard/play");
+    } else {
+      router.push("/auth");
+    }
   };
   return (
     <div className="w-full h-screen p-5 mt-[-25] ">

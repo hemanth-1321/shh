@@ -25,12 +25,13 @@ const Page = () => {
       });
       console.log(response);
       const token = response.data.token;
-      const user = response.data.displayname;
+      const user = response.data.user.username;
+      console.log("username", user);
 
       login(token, user);
 
       toast.success(`welcome ${username}`);
-      router.push("/dashboard");
+      router.push("/dashboard/play");
     } catch (error) {
       console.log("error while login", error);
       toast.error("error while logging you in ");
