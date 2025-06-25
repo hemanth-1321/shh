@@ -11,20 +11,11 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
-  DialogHeader,
-  DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
 import { NEXT_URL } from "@/config/Api";
-import {
-  Instagram,
-  MessageCircle,
-  Share2,
-  Smartphone,
-  Phone,
-} from "lucide-react";
+import { Instagram, MessageCircle, Share2, Smartphone } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 
 const prompts = [
@@ -58,11 +49,16 @@ export const Play = () => {
     setTimeout(() => {
       const newIndex = Math.floor(Math.random() * prompts.length);
       setIndex(newIndex);
+
       setIsRolling(false);
     }, 100);
   };
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(`${NEXT_URL}/user/${username}`);
+    const prompt = prompts[index];
+    const encodedPropmpt = encodeURIComponent(prompt);
+    navigator.clipboard.writeText(
+      `${NEXT_URL}/user/${username}?prompt=${encodedPropmpt}`
+    );
     toast.success("copied!");
   };
   return (
