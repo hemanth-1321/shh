@@ -17,17 +17,7 @@ import {
 import { NEXT_URL } from "@/config/Api";
 import { Instagram, MessageCircle, Share2, Smartphone } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
-
-const prompts = [
-  "send me anonymous messages!",
-  "tell me what you REALLY think about me!",
-  "what was your first impression of me?",
-  "drop an anonymous compliment 🥰",
-  "have you ever had a crush on me? 😳",
-  "confess something anonymously 👀",
-  "what rumor have you heard about me?",
-  "describe me in one word!",
-];
+import { prompts } from "@/app/constants/prompt";
 
 export const Play = () => {
   const [index, setIndex] = useState(0);
@@ -54,11 +44,7 @@ export const Play = () => {
     }, 100);
   };
   const handleCopyLink = () => {
-    const prompt = prompts[index];
-    const encodedPropmpt = encodeURIComponent(prompt);
-    navigator.clipboard.writeText(
-      `${NEXT_URL}/user/${username}?prompt=${encodedPropmpt}`
-    );
+    navigator.clipboard.writeText(`${NEXT_URL}/u/${username}?pid=${index}`);
     toast.success("copied!");
   };
   return (

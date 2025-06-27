@@ -20,7 +20,7 @@ const router = express_1.default.Router();
 const prisma = new client_1.PrismaClient();
 router.post("/:username", senderMiddleware_1.senderMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
-    const { content } = req.body;
+    const { question, content } = req.body;
     const { username } = req.params;
     const recipient = yield prisma.user.findUnique({
         where: { username },
@@ -53,6 +53,7 @@ router.post("/:username", senderMiddleware_1.senderMiddleware, (req, res) => __a
                 senderId,
                 recipientId: recipient.id,
                 isAnonymous,
+                question,
             },
         });
         res.status(201).json({ message: "Message sent", data: message });

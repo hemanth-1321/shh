@@ -8,7 +8,7 @@ const router: Router = express.Router();
 const prisma = new PrismaClient();
 
 router.post("/:username", senderMiddleware, async (req, res) => {
-  const { content } = req.body;
+  const { question, content } = req.body;
   const { username } = req.params;
 
   const recipient = await prisma.user.findUnique({
@@ -46,6 +46,7 @@ router.post("/:username", senderMiddleware, async (req, res) => {
         senderId,
         recipientId: recipient.id,
         isAnonymous,
+        question,
       },
     });
 
@@ -78,4 +79,3 @@ router.get("/bulk", middleware, async (req, res) => {
   }
 });
 export default router;
-
