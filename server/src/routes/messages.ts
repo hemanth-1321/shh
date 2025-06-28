@@ -3,10 +3,12 @@ import express from "express";
 import { PrismaClient } from "@prisma/client";
 import { senderMiddleware } from "../middlewares/senderMiddleware";
 import { middleware } from "../middlewares/middleware";
+import { WebSocket } from "ws";
 
 const router: Router = express.Router();
 const prisma = new PrismaClient();
 
+// Send a message to a user
 router.post("/:username", senderMiddleware, async (req, res) => {
   const { question, content } = req.body;
   const { username } = req.params;
@@ -35,8 +37,7 @@ router.post("/:username", senderMiddleware, async (req, res) => {
       }
     }
   } catch (error) {
-    console.log("Token/user lookup failed. Proceeding anonymously.");
-    // Proceeding anonymously, so no error response here
+    console.log("Token lookup failed. Proceeding anonymously.");
   }
 
   try {
@@ -50,6 +51,18 @@ router.post("/:username", senderMiddleware, async (req, res) => {
       },
     });
 
+    const clients = req.app.get("clients") as Map<string, WebSocket>;
+    const ws = clients.get(recipient.id);
+
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(
+        JSON.stringify({
+          type: "new_message",
+          message,
+        })
+      );
+    }
+
     res.status(201).json({ message: "Message sent", data: message });
     return;
   } catch (err) {
@@ -59,23 +72,22 @@ router.post("/:username", senderMiddleware, async (req, res) => {
   }
 });
 
+// Get all messages for the logged-in user
 router.get("/bulk", middleware, async (req, res) => {
   const userId = req.user?.id;
-  console.log("user", userId);
   try {
     const messages = await prisma.message.findMany({
       where: {
         recipientId: userId,
       },
     });
-    res.status(200).json({
-      messages,
-    });
+    res.status(200).json({ messages });
+    return;
   } catch (error) {
-    console.log("error fetching messages");
-    res.status(500).json({
-      message: "errro fetching messages",
-    });
+    console.log("Error fetching messages", error);
+    res.status(500).json({ message: "Error fetching messages" });
+    return;
   }
 });
+
 export default router;

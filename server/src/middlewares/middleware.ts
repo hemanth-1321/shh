@@ -14,7 +14,6 @@ export const middleware = async (
   next: NextFunction
 ) => {
   const token = req.headers.authorization;
-  console.log(token);
   if (!token) {
     res.status(404).json({
       message: "Unauthorized",

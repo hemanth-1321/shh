@@ -16,7 +16,6 @@ exports.middleware = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const middleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const token = req.headers.authorization;
-    console.log(token);
     if (!token) {
         res.status(404).json({
             message: "Unauthorized",

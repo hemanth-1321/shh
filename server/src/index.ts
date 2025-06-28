@@ -1,18 +1,65 @@
 import dotenv from "dotenv";
 dotenv.config();
+
 import cors from "cors";
 import express from "express";
+import http from "http";
+import { WebSocketServer, WebSocket } from "ws";
 import AuthRoutes from "./routes/authRoutes";
 import MessageRoute from "./routes/messages";
+
 const app = express();
 app.use(express.json());
-const PORT = 8080;
 app.use(cors());
+
+const server = http.createServer(app);
+const wss = new WebSocketServer({ server });
+const clients = new Map<string, WebSocket>(); // userId -> ws
+
+const PORT = 8080;
+
+// WebSocket connection
+wss.on("connection", (ws) => {
+  console.log("New WebSocket connection");
+
+  ws.on("message", (data) => {
+    console.log("data", JSON.parse(data.toString()));
+    try {
+      const parsed = JSON.parse(data.toString());
+
+      if (parsed.type === "register" && parsed.userId) {
+        console.log("parsed", parsed.userId);
+        clients.set(parsed.userId, ws);
+        console.log(`Registered client for userId: ${parsed.userId}`);
+      }
+    } catch (err) {
+      console.log("Invalid WebSocket message format");
+    }
+  });
+
+  ws.on("close", () => {
+    for (const [userId, client] of clients.entries()) {
+      if (client === ws) {
+        clients.delete(userId);
+        console.log(`Disconnected WebSocket for userId: ${userId}`);
+        break;
+      }
+    }
+  });
+});
+
+// Share clients map across app
+app.set("clients", clients);
+
+// Basic routes
 app.get("/", (req, res) => {
   res.send("Hello, world!");
 });
+
 app.use("/auth", AuthRoutes);
 app.use("/message", MessageRoute);
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+
+// Start server
+server.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });

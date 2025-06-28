@@ -1,22 +1,10 @@
 "use client";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useAuthStore } from "@/store/useAuthStore";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Play } from "@/components/Play";
 import { Inbox } from "@/components/Inbox";
+import { useAuthStore } from "@/store/useAuthStore";
+import { useEffect } from "react";
 
 export default function page() {
   return (

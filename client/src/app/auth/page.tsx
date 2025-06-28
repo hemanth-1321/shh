@@ -14,7 +14,7 @@ const Page = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { login } = useAuthStore() as {
-    login: (token: string, user: string) => void;
+    login: (token: string, user: string, userId: string) => void;
   };
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -26,9 +26,10 @@ const Page = () => {
       console.log(response);
       const token = response.data.token;
       const user = response.data.user.username;
+      const userId = response.data.user.id;
       console.log("username", user);
 
-      login(token, user);
+      login(token, user, userId);
 
       toast.success(`welcome ${username}`);
       router.push("/dashboard/play");

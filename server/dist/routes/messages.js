@@ -16,8 +16,10 @@ const express_1 = __importDefault(require("express"));
 const client_1 = require("@prisma/client");
 const senderMiddleware_1 = require("../middlewares/senderMiddleware");
 const middleware_1 = require("../middlewares/middleware");
+const ws_1 = require("ws");
 const router = express_1.default.Router();
 const prisma = new client_1.PrismaClient();
+// Send a message to a user
 router.post("/:username", senderMiddleware_1.senderMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const { question, content } = req.body;
@@ -43,8 +45,7 @@ router.post("/:username", senderMiddleware_1.senderMiddleware, (req, res) => __a
         }
     }
     catch (error) {
-        console.log("Token/user lookup failed. Proceeding anonymously.");
-        // Proceeding anonymously, so no error response here
+        console.log("Token lookup failed. Proceeding anonymously.");
     }
     try {
         const message = yield prisma.message.create({
@@ -56,6 +57,14 @@ router.post("/:username", senderMiddleware_1.senderMiddleware, (req, res) => __a
                 question,
             },
         });
+        const clients = req.app.get("clients");
+        const ws = clients.get(recipient.id);
+        if (ws && ws.readyState === ws_1.WebSocket.OPEN) {
+            ws.send(JSON.stringify({
+                type: "new_message",
+                message,
+            }));
+        }
         res.status(201).json({ message: "Message sent", data: message });
         return;
     }
@@ -65,25 +74,23 @@ router.post("/:username", senderMiddleware_1.senderMiddleware, (req, res) => __a
         return;
     }
 }));
+// Get all messages for the logged-in user
 router.get("/bulk", middleware_1.middleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
-    console.log("user", userId);
     try {
         const messages = yield prisma.message.findMany({
             where: {
                 recipientId: userId,
             },
         });
-        res.status(200).json({
-            messages,
-        });
+        res.status(200).json({ messages });
+        return;
     }
     catch (error) {
-        console.log("error fetching messages");
-        res.status(500).json({
-            message: "errro fetching messages",
-        });
+        console.log("Error fetching messages", error);
+        res.status(500).json({ message: "Error fetching messages" });
+        return;
     }
 }));
 exports.default = router;
