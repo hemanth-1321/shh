@@ -72,13 +72,15 @@ router.post("/:username", senderMiddleware, async (req, res) => {
   }
 });
 
-// Get all messages for the logged-in user
 router.get("/bulk", middleware, async (req, res) => {
   const userId = req.user?.id;
   try {
     const messages = await prisma.message.findMany({
       where: {
         recipientId: userId,
+      },
+      orderBy: {
+        createdAt: "desc",
       },
     });
     res.status(200).json({ messages });

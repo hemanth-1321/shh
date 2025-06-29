@@ -74,7 +74,6 @@ router.post("/:username", senderMiddleware_1.senderMiddleware, (req, res) => __a
         return;
     }
 }));
-// Get all messages for the logged-in user
 router.get("/bulk", middleware_1.middleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
@@ -82,6 +81,9 @@ router.get("/bulk", middleware_1.middleware, (req, res) => __awaiter(void 0, voi
         const messages = yield prisma.message.findMany({
             where: {
                 recipientId: userId,
+            },
+            orderBy: {
+                createdAt: "desc",
             },
         });
         res.status(200).json({ messages });
