@@ -1,6 +1,6 @@
+import { WS_URL } from "@/config/Api";
 import { useEffect } from "react";
 
-const WS_URL = "ws://localhost:8080";
 const useWebSocket = (userId: string, onMessage: (message: string) => void) => {
   console.log("userId", userId);
 
