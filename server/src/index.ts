@@ -14,11 +14,10 @@ app.use(cors());
 
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
-const clients = new Map<string, WebSocket>(); // userId -> ws
+const clients = new Map<string, WebSocket>();
 
 const PORT = 8080;
 
-// WebSocket connection
 wss.on("connection", (ws) => {
   console.log("New WebSocket connection");
 
@@ -48,10 +47,8 @@ wss.on("connection", (ws) => {
   });
 });
 
-// Share clients map across app
 app.set("clients", clients);
 
-// Basic routes
 app.get("/", (req, res) => {
   res.send("Hello, world!");
 });
