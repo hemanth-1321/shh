@@ -21,7 +21,7 @@ const useWebSocket = (userId: string, onMessage: (message: string) => void) => {
     };
 
     ws.onerror = (err) => console.error("WS error:", err);
-    ws.onclose = () => console.log("WS closed");
+    ws.onclose = () => console.log("WS close");
 
     return () => ws.close();
   }, [userId]);
