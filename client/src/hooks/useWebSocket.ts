@@ -9,7 +9,7 @@ const useWebSocket = (userId: string, onMessage: (message: string) => void) => {
 
     const ws = new WebSocket(WS_URL);
     ws.onopen = () => {
-      console.log("✅ Connected to WS from test");
+      console.log("Connected to WS from test");
       ws.send(JSON.stringify({ type: "register", userId }));
     };
 
