@@ -24,6 +24,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${onest.variable} font-onest`}>{children}</body>
       <Toaster />
+      {/* <Footer /> */}
     </html>
   );
 }

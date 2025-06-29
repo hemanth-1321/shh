@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 
 const WS_URL = "ws://localhost:8080";
 const useWebSocket = (userId: string, onMessage: (message: string) => void) => {
