@@ -16,9 +16,8 @@ app.use(express_1.default.json());
 app.use((0, cors_1.default)());
 const server = http_1.default.createServer(app);
 const wss = new ws_1.WebSocketServer({ server });
-const clients = new Map(); // userId -> ws
+const clients = new Map();
 const PORT = 8080;
-// WebSocket connection
 wss.on("connection", (ws) => {
     console.log("New WebSocket connection");
     ws.on("message", (data) => {
@@ -45,9 +44,7 @@ wss.on("connection", (ws) => {
         }
     });
 });
-// Share clients map across app
 app.set("clients", clients);
-// Basic routes
 app.get("/", (req, res) => {
     res.send("Hello, world!");
 });
