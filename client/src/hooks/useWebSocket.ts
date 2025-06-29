@@ -1,25 +1,30 @@
-// hooks/useWebSocket.ts
 import { useEffect, useRef } from "react";
 
-const WS_URL = "ws://localhost:8080"; // ✅ Change this to your actual backend WebSocket URL
-
+const WS_URL = "ws://localhost:8080";
 const useWebSocket = (userId: string, onMessage: (message: string) => void) => {
-  const socketRef = useRef<WebSocket | null>(null);
+  console.log("userId", userId);
 
   useEffect(() => {
-    const ws = new WebSocket("ws://localhost:8080");
+    if (!userId) return;
+
+    const ws = new WebSocket(WS_URL);
     ws.onopen = () => {
       console.log("✅ Connected to WS from test");
       ws.send(JSON.stringify({ type: "register", userId }));
     };
+
     ws.onmessage = (e) => {
-      console.log("Message:", e.data);
+      const data = JSON.parse(e.data);
+      if (data.type === "new_message") {
+        onMessage(JSON.stringify(data.message));
+      }
     };
+
     ws.onerror = (err) => console.error("WS error:", err);
     ws.onclose = () => console.log("WS closed");
 
     return () => ws.close();
-  }, []);
+  }, [userId]);
 };
 
 export default useWebSocket;

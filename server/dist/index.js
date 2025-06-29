@@ -26,6 +26,7 @@ wss.on("connection", (ws) => {
         try {
             const parsed = JSON.parse(data.toString());
             if (parsed.type === "register" && parsed.userId) {
+                console.log("parsed", parsed.userId);
                 clients.set(parsed.userId, ws);
                 console.log(`Registered client for userId: ${parsed.userId}`);
             }

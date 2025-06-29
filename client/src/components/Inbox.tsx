@@ -19,7 +19,7 @@ export const Inbox = () => {
   };
 
   useEffect(() => {
-    loadTokenFromStorage();
+    loadTokenFromStorage(); // Load from localStorage on mount
   }, []);
 
   useEffect(() => {
@@ -27,9 +27,7 @@ export const Inbox = () => {
       if (!token) return;
       try {
         const response = await axios.get(`${BACKEND_URL}/message/bulk`, {
-          headers: {
-            Authorization: token,
-          },
+          headers: { Authorization: token },
         });
         setMessages(response.data.messages);
       } catch (error) {
@@ -40,7 +38,7 @@ export const Inbox = () => {
     fetchMessages();
   }, [token]);
 
-  // Register WebSocket only when userId is available
+  // ✅ Call only when userId is defined
   useWebSocket(userId, (msg: string) => {
     const newMessage: Message = JSON.parse(msg);
     setMessages((prev) => [newMessage, ...prev]);
