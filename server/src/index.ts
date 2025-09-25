@@ -48,7 +48,7 @@ wss.on("connection", (ws) => {
 });
 
 app.get("/", (req, res) => {
-  res.send(", world!");
+  res.send(", hello duniya!");
 });
 
 app.use("/auth", AuthRoutes);
