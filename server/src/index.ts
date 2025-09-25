@@ -40,7 +40,7 @@ wss.on("connection", (ws) => {
     for (const [userId, client] of clients.entries()) {
       if (client === ws) {
         clients.delete(userId);
-        console.log("what so ever");
+        console.log("what  smwokdoqw ever");
         break;
       }
     }
