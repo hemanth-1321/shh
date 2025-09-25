@@ -56,5 +56,5 @@ app.use("/message", MessageRoute);
 
 // Start server
 server.listen(PORT, () => {
-  console.log(`🚀 Server  on  ${PORT}`);
+  console.log(`🚀   on  ${PORT}`);
 });
