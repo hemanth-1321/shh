@@ -47,8 +47,6 @@ wss.on("connection", (ws) => {
   });
 });
 
-app.set("clients", clients);
-
 app.get("/", (req, res) => {
   res.send("Hello, world!");
 });
